@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title><%= content_for(:title) || "RadioTrack" %></title>
+    <meta name="description" content="Отслеживайте треки в радиоэфире в реальном времени" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+    <style>
+      /* Base styles */
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+      a { color: #0066cc; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      /* Layout */
+      .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+      .header { background: #fff; border-bottom: 1px solid #ddd; padding: 16px 0; margin-bottom: 24px; }
+      .header-content { display: flex; justify-content: space-between; align-items: center; }
+      .logo { font-size: 24px; font-weight: bold; color: #333; }
+      .nav { display: flex; gap: 16px; }
+      .main { background: #fff; border-radius: 8px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+      .footer { text-align: center; padding: 24px; color: #666; font-size: 14px; }
+
+      /* Components */
+      .btn { display: inline-block; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; text-align: center; }
+      .btn-primary { background: #0066cc; color: #fff; }
+      .btn-primary:hover { background: #0055aa; text-decoration: none; }
+      .btn-secondary { background: #e0e0e0; color: #333; }
+      .btn-secondary:hover { background: #d0d0d0; text-decoration: none; }
+      .btn-sm { padding: 4px 12px; font-size: 13px; }
+
+      /* Station list */
+      .station-list { list-style: none; }
+      .station-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid #eee; }
+      .station-item:last-child { border-bottom: none; }
+      .station-info { flex: 1; }
+      .station-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+      .station-meta { font-size: 13px; color: #666; }
+      .station-actions { display: flex; gap: 8px; }
+
+      /* Track info */
+      .track-now { background: #f0f7ff; border: 1px solid #b3d9ff; border-radius: 4px; padding: 12px; margin-top: 8px; }
+      .track-artist { font-weight: 600; color: #0066cc; }
+      .track-title { color: #333; }
+      .track-time { font-size: 12px; color: #666; margin-top: 4px; }
+
+      /* Paywall */
+      .paywall { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 8px; padding: 24px; text-align: center; }
+      .paywall h3 { margin-bottom: 12px; }
+      .paywall-features { list-style: none; margin: 16px 0; }
+      .paywall-features li { padding: 4px 0; }
+      .paywall-btn { background: #fff; color: #667eea; padding: 12px 24px; font-weight: 600; }
+      .paywall-btn:hover { background: #f0f0f0; text-decoration: none; }
+
+      /* Flash messages */
+      .flash { padding: 12px 16px; border-radius: 4px; margin-bottom: 16px; }
+      .flash-notice { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+      .flash-alert { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+
+      /* Utilities */
+      .text-muted { color: #666; }
+      .text-sm { font-size: 13px; }
+      .mt-2 { margin-top: 8px; }
+      .mt-3 { margin-top: 16px; }
+      .mb-2 { margin-bottom: 8px; }
+      .mb-3 { margin-bottom: 16px; }
+
+      /* Badge */
+      .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+      .badge-primary { background: #0066cc; color: #fff; }
+      .badge-success { background: #28a745; color: #fff; }
+      .badge-warning { background: #ffc107; color: #333; }
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="container header-content">
+        <%= link_to root_path, class: "logo" do %>
+          📻 RadioTrack
+        <% end %>
+        <nav class="nav">
+          <%= link_to "Станции", root_path %>
+          <%= link_to "Плейлисты", playlists_path if user_signed_in? %>
+          <% if user_signed_in? %>
+            <%= link_to "Профиль", edit_user_registration_path %>
+            <%= link_to "Выйти", destroy_user_session_path, method: :delete %>
+          <% else %>
+            <%= link_to "Войти", new_user_session_path %>
+            <%= link_to "Регистрация", new_user_registration_path %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <% if notice %>
+        <div class="flash flash-notice"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="flash flash-alert"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; <%= Time.current.year %> RadioTrack. Все права защищены.</p>
+        <p class="text-sm text-muted">
+          <%= link_to "О проекте", "#", class: "text-muted" %> |
+          <%= link_to "Контакты", "#", class: "text-muted" %>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

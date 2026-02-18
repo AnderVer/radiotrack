@@ -1,41 +1,78 @@
-<div class="container">
-  <h1>RadioTrack - Последний трек в эфире</h1>
+<% content_for :title, "Главная — RadioTrack" %>
 
-  <% if user_signed_in? %>
-    <p>Привет, <%= current_user.email %>!</p>
-    <%= link_to "Выйти", destroy_user_session_path, method: :delete %>
-  <% else %>
-    <p>
-      <%= link_to "Войти через VK", user_vk_omniauth_authorize_path %> |
-      <%= link_to "Войти через Yandex", user_yandex_omniauth_authorize_path %>
-    </p>
-  <% end %>
+<div class="main">
+  <h1 class="mb-3">📻 Радиостанции</h1>
+  <p class="text-muted mb-3">
+    Отслеживайте треки, которые играют в эфире популярных радиостанций
+  </p>
 
-  <section class="stations">
-    <h2>Популярные станции</h2>
-    <ul>
+  <% if @stations.any? %>
+    <ul class="station-list">
       <% @stations.each do |station| %>
-        <li>
-          <strong><%= station.title %></strong>
-          <% if station.last_track %>
-            <p>Сейчас играет: <%= station.last_track.artist %> - <%= station.last_track.title %></p>
-          <% else %>
-            <p>Нет данных о треке</p>
-          <% end %>
+        <li class="station-item">
+          <div class="station-info">
+            <%= link_to station_path(station), class: "station-title" do %>
+              <%= station.title %>
+              <% if station.code == "avtoradio" %>
+                <span class="badge badge-success">MVP</span>
+              <% end %>
+            <% end %>
+            <div class="station-meta">
+              <%= station.code %>
+              <% if station.has_public_playlist? %>
+                <span class="badge badge-primary">Плейлист</span>
+              <% end %>
+            </div>
+
+            <% if station.last_track %>
+              <div class="track-now mt-2">
+                <div>
+                  <span class="track-artist"><%= station.last_track.artist %></span>
+                  <span> — </span>
+                  <span class="track-title"><%= station.last_track.title %></span>
+                </div>
+                <div class="track-time">
+                  В эфире: <%= l station.last_track.played_at, format: :time %>
+                </div>
+              </div>
+            <% else %>
+              <div class="text-muted mt-2 text-sm">Нет данных о треке</div>
+            <% end %>
+          </div>
+          <div class="station-actions">
+            <%= link_to "Открыть", station.player_url, target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" %>
+            <%= link_to "Подробнее", station_path(station), class: "btn btn-primary btn-sm" %>
+          </div>
         </li>
       <% end %>
     </ul>
-  </section>
+  <% else %>
+    <p class="text-muted">Станции пока не добавлены</p>
+  <% end %>
+</div>
 
-  <section class="features">
-    <h2>Возможности</h2>
-    <ul>
-      <li>Последний трек в эфире (Premium)</li>
-      <li>Плейлист эфира за 30 минут (Premium)</li>
-      <li>Прогноз "Будет скоро" (Premium)</li>
-      <li>Добавить текущий трек в плейлист (Premium)</li>
-      <li>Закладки станций</li>
-      <li>Пользовательские плейлисты</li>
-    </ul>
-  </section>
+<div class="main">
+  <h2 class="mb-3">✨ Возможности</h2>
+  <ul style="padding-left: 20px; line-height: 1.8;">
+    <li><strong>Последний трек в эфире</strong> — узнайте, что играет прямо сейчас</li>
+    <li><strong>Плейлист эфира за 30 минут</strong> — история треков</li>
+    <li><strong>Прогноз "Будет скоро"</strong> — когда трек снова будет в эфире</li>
+    <li><strong>Закладки станций</strong> — быстрые ссылки на любимые станции</li>
+    <li><strong>Пользовательские плейлисты</strong> — сохраняйте понравившиеся треки</li>
+  </ul>
+
+  <% unless user_signed_in? %>
+    <div class="paywall mt-3">
+      <h3>🎵 Premium доступ</h3>
+      <p>Получите полный доступ ко всем функциям сервиса</p>
+      <ul class="paywall-features">
+        <li>✅ Последний трек в эфире</li>
+        <li>✅ Плейлист эфира за 30 минут</li>
+        <li>✅ Прогноз "Будет скоро"</li>
+        <li>✅ Добавление трека в плейлист</li>
+        <li>✅ Безлимитные закладки</li>
+      </ul>
+      <%= link_to "Активировать подписку", new_user_registration_path, class: "btn paywall-btn" %>
+    </div>
+  <% end %>
 </div>

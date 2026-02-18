@@ -7,6 +7,9 @@ Rails.application.routes.draw do
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
+  # Web pages
+  resources :stations, only: [:show]
+
   # API routes
   namespace :api do
     # Recognition callback (external service → our app)
