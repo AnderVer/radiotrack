@@ -1,0 +1,38 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# logs
+/log/*
+!/log/.keep
+
+# tmp
+/tmp/*
+!/tmp/.keep
+
+# public/uploads
+/public/uploads/*
+!/public/uploads/.keep
+
+# Bundle
+/vendor/bundle
+
+# dotenv
+/.env
+/.env.*
+!.env.example
+
+# IDE
+/.idea
+/.vscode
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+/docker-compose.override.yml
+
+# Test coverage
+/coverage

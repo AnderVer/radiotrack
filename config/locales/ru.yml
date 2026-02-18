@@ -1,0 +1,46 @@
+# Locale settings for Russian language
+ru:
+  date:
+    formats:
+      default: "%d.%m.%Y"
+      short: "%d %b"
+      long: "%d %B %Y"
+    day_names: [Воскресенье, Понедельник, Вторник, Среда, Четверг, Пятница, Суббота]
+    abbr_day_names: [Вс, Пн, Вт, Ср, Чт, Пт, Сб]
+    month_names: [~, Января, Февраля, Марта, Апреля, Мая, Июня, Июля, Августа, Сентября, Октября, Ноября, Декабря]
+    abbr_month_names: [~, янв., февр., марта, апр., мая, июня, июля, авг., сент., окт., нояб., дек.]
+  
+  time:
+    formats:
+      default: "%d.%m.%Y %H:%M"
+      short: "%d %b %H:%M"
+      long: "%d %B %Y %H:%M"
+  
+  activerecord:
+    models:
+      user: Пользователь
+      station: Радиостанция
+      detection: Трек
+      playlist: Плейлист
+      playlist_item: Трек в плейлисте
+      station_bookmark: Закладка
+    attributes:
+      user:
+        email: Email
+        password: Пароль
+        password_confirmation: Подтверждение пароля
+      station:
+        code: Код
+        title: Название
+        player_url: URL плеера
+        stream_url: URL потока
+      detection:
+        artist: Исполнитель
+        title: Название трека
+        played_at: Время воспроизведения
+      playlist:
+        title: Название
+      playlist_item:
+        track_artist: Исполнитель
+        track_title: Трек
+        status: Статус

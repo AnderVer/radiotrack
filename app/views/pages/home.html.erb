@@ -1,0 +1,41 @@
+<div class="container">
+  <h1>RadioTrack - Последний трек в эфире</h1>
+
+  <% if user_signed_in? %>
+    <p>Привет, <%= current_user.email %>!</p>
+    <%= link_to "Выйти", destroy_user_session_path, method: :delete %>
+  <% else %>
+    <p>
+      <%= link_to "Войти через VK", user_vk_omniauth_authorize_path %> |
+      <%= link_to "Войти через Yandex", user_yandex_omniauth_authorize_path %>
+    </p>
+  <% end %>
+
+  <section class="stations">
+    <h2>Популярные станции</h2>
+    <ul>
+      <% @stations.each do |station| %>
+        <li>
+          <strong><%= station.title %></strong>
+          <% if station.last_track %>
+            <p>Сейчас играет: <%= station.last_track.artist %> - <%= station.last_track.title %></p>
+          <% else %>
+            <p>Нет данных о треке</p>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+
+  <section class="features">
+    <h2>Возможности</h2>
+    <ul>
+      <li>Последний трек в эфире (Premium)</li>
+      <li>Плейлист эфира за 30 минут (Premium)</li>
+      <li>Прогноз "Будет скоро" (Premium)</li>
+      <li>Добавить текущий трек в плейлист (Premium)</li>
+      <li>Закладки станций</li>
+      <li>Пользовательские плейлисты</li>
+    </ul>
+  </section>
+</div>
