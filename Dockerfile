@@ -7,9 +7,9 @@ LABEL fly_launch_runtime="Rails"
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# Install base packages including build tools for native extensions
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libvips postgresql-client build-essential && \
+    apt-get install --no-install-recommends -y curl libvips postgresql-client build-essential libpq-dev libssl-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
