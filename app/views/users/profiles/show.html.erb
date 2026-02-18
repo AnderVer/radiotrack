@@ -1,0 +1,112 @@
+<% content_for :title, "Профиль — RadioTrack" %>
+
+<div class="main">
+  <h1 class="mb-3">Профиль пользователя</h1>
+
+  <div style="display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+    <!-- Account Info -->
+    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+      <h2 class="mb-3">👤 Аккаунт</h2>
+      <div class="mb-2">
+        <strong>Email:</strong> <%= current_user.email %>
+      </div>
+      <div class="mb-2">
+        <strong>План:</strong>
+        <% case current_user.plan_code %>
+        <% when "paid" %>
+          <span class="badge badge-success">Premium</span>
+        <% when "auth" %>
+          <span class="badge badge-primary">Auth</span>
+        <% else %>
+          <span class="badge badge-warning">Guest</span>
+        <% end %>
+      </div>
+      <% if current_user.paid? %>
+        <div class="mb-2">
+          <strong>Подписка до:</strong> <%= l current_user.paid_until, format: :long %>
+        </div>
+      <% end %>
+      <% if current_user.guest? %>
+        <div class="mb-2">
+          <strong>Осталось попыток "Где играет":</strong> <%= current_user.trial_tune_in_remaining || 0 %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Subscription Status -->
+    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+      <h2 class="mb-3">🎵 Подписка</h2>
+
+      <% if current_user.paid? %>
+        <div style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; padding: 16px; margin-bottom: 16px;">
+          <strong style="color: #155724;">✅ Premium активна</strong>
+          <p style="margin: 8px 0 0 0; color: #155724;">
+            Ваша подписка действует до <%= l current_user.paid_until, format: :date %>
+          </p>
+        </div>
+
+        <ul style="margin-bottom: 16px; padding-left: 20px;">
+          <li>✅ Последний трек в эфире</li>
+          <li>✅ Плейлист эфира за 30 минут</li>
+          <li>✅ Прогноз "Будет скоро"</li>
+          <li>✅ Добавление трека в плейлист</li>
+          <li>✅ Безлимитные закладки</li>
+        </ul>
+
+        <%= button_to "Отменить подписку (демо)", user_cancel_subscription_path, method: :post, class: "btn btn-secondary", data: { confirm: "Вы уверены?" } %>
+      <% else %>
+        <div class="paywall" style="margin-bottom: 16px;">
+          <h3>🎵 Premium доступ</h3>
+          <p>Получите полный доступ ко всем функциям</p>
+        </div>
+
+        <ul style="margin-bottom: 16px; padding-left: 20px;">
+          <li>❌ Последний трек в эфире</li>
+          <li>❌ Плейлист эфира за 30 минут</li>
+          <li>❌ Прогноз "Будет скоро"</li>
+          <li>✅ Закладки станций (лимит: <%= current_user.bookmarks_limit || "∞" %>)</li>
+          <li>✅ Плейлисты (лимит: <%= current_user.playlists_limit %>)</li>
+        </ul>
+
+        <%= button_to "Активировать демо-подписку (30 дней)", user_activate_demo_subscription_path, method: :post, class: "btn btn-primary" %>
+        <p class="text-sm text-muted mt-2">
+          Демо-подписка активируется на 30 дней бесплатно
+        </p>
+      <% end %>
+    </div>
+
+    <!-- OAuth Identities -->
+    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+      <h2 class="mb-3">🔗 Привязанные аккаунты</h2>
+
+      <% if current_user.identities.any? %>
+        <ul style="margin-bottom: 16px;">
+          <% current_user.identities.each do |identity| %>
+            <li class="mb-2">
+              <span class="badge badge-primary"><%= identity.provider.capitalize %></span>
+              <span class="text-muted text-sm ml-2">UID: <%= identity.uid %></span>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p class="text-muted mb-3">Нет привязанных аккаунтов</p>
+      <% end %>
+
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <%= button_to "Привязать VK", user_vk_omniauth_authorize_path, method: :post, data: { turbo: false }, class: "btn btn-secondary btn-sm" %>
+        <%= button_to "Привязать Yandex", user_yandex_omniauth_authorize_path, method: :post, data: { turbo: false }, class: "btn btn-secondary btn-sm" %>
+      </div>
+    </div>
+
+    <!-- Account Actions -->
+    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+      <h2 class="mb-3">⚙️ Настройки</h2>
+
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <%= link_to "Изменить пароль", edit_user_registration_path, class: "btn btn-secondary" %>
+        <%= link_to "Редактировать профиль", edit_user_registration_path, class: "btn btn-secondary" %>
+        <%= button_to "Выйти", destroy_user_session_path, method: :delete, class: "btn btn-secondary", data: { confirm: "Вы уверены?" } %>
+      </div>
+    </div>
+  </div>
+</div>

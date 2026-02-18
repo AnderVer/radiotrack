@@ -7,6 +7,13 @@ Rails.application.routes.draw do
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
+  # User profile
+  resource :user, only: [] do
+    resource :profile, only: [:show], controller: "users/profiles"
+    post :activate_demo_subscription, to: "users/profiles#activate_demo"
+    post :cancel_subscription, to: "users/profiles#cancel"
+  end
+
   # Web pages
   resources :stations, only: [:show]
 

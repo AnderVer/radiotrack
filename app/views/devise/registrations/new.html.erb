@@ -1,0 +1,50 @@
+<% content_for :title, "Регистрация — RadioTrack" %>
+
+<div class="main" style="max-width: 500px; margin: 0 auto;">
+  <h1 class="mb-3" style="text-align: center;">Регистрация</h1>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "mb-4" }) do |f| %>
+    <div class="mb-3">
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", style: "width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;", placeholder: "Email" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :password, "Пароль", class: "form-label" %>
+      <% if @minimum_password_length %>
+        <em class="text-muted" style="font-size: 13px;">(<%= @minimum_password_length %> символов минимум)</em>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "form-control", style: "width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;", placeholder: "Пароль" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :password_confirmation, "Подтверждение пароля", class: "form-label" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", style: "width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;", placeholder: "Подтверждение пароля" %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.submit "Зарегистрироваться", class: "btn btn-primary", style: "width: 100%;" %>
+    </div>
+  <% end %>
+
+  <div style="text-align: center; margin: 16px 0; color: #666;">
+    <span>или зарегистрируйтесь через</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 12px;">
+    <%= button_to user_vk_omniauth_authorize_path, method: :post, data: { turbo: false }, class: "btn", style: "background: #0077FF; color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 500;" do %>
+      🔵 Войти через VK
+    <% end %>
+
+    <%= button_to user_yandex_omniauth_authorize_path, method: :post, data: { turbo: false }, class: "btn", style: "background: #FC3F1D; color: #fff; border: none; padding: 12px; border-radius: 4px; font-weight: 500;" do %>
+      🔴 Войти через Yandex
+    <% end %>
+  </div>
+
+  <div class="mt-4" style="text-align: center;">
+    <p class="text-muted">
+      Уже есть аккаунт?
+      <%= link_to "Войти", new_session_path(resource_name) %>
+    </p>
+  </div>
+</div>
