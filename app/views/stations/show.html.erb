@@ -24,7 +24,15 @@
         <% end %>
       </p>
     </div>
-    <div style="display: flex; gap: 8px;">
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <% if user_signed_in? %>
+        <% bookmark = current_user.station_bookmarks.find_by(station: @station) %>
+        <% if bookmark %>
+          <%= button_to "★ В закладках", bookmark_path(@station), method: :delete, class: "btn btn-secondary" %>
+        <% else %>
+          <%= button_to "☆ В закладки", bookmarks_path(station_id: @station.id), method: :post, class: "btn btn-primary" %>
+        <% end %>
+      <% end %>
       <%= link_to "🎧 Открыть сайт", @station.player_url, target: "_blank", rel: "noopener", class: "btn btn-secondary" %>
       <% if @station.stream_url.present? %>
         <%= link_to "▶️ Слушать", @station.stream_url, target: "_blank", rel: "noopener", class: "btn btn-primary" %>

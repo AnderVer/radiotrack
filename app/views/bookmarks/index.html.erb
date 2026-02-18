@@ -1,0 +1,74 @@
+<% content_for :title, "Закладки — RadioTrack" %>
+
+<div class="main">
+  <h1 class="mb-3">📚 Мои закладки</h1>
+
+  <% if @bookmarks.any? %>
+    <p class="text-muted mb-3">
+      Закладки: <%= @bookmarks.count %>
+      <% if current_user.bookmarks_limit %>
+        (лимит: <%= current_user.bookmarks_limit %>)
+      <% end %>
+    </p>
+
+    <ul class="station-list">
+      <% @bookmarks.each do |bookmark| %>
+        <li class="station-item">
+          <div class="station-info">
+            <%= link_to bookmark.station.title, station_path(bookmark.station), class: "station-title" %>
+            <div class="station-meta">
+              <%= bookmark.station.code %>
+              <% if bookmark.station.has_public_playlist? %>
+                <span class="badge badge-primary">Плейлист</span>
+              <% end %>
+            </div>
+
+            <% if bookmark.station.last_track %>
+              <div class="track-now mt-2">
+                <div>
+                  <span class="track-artist"><%= bookmark.station.last_track.artist %></span>
+                  <span> — </span>
+                  <span class="track-title"><%= bookmark.station.last_track.title %></span>
+                </div>
+                <div class="track-time">
+                  В эфире: <%= l bookmark.station.last_track.played_at, format: :time %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="station-actions">
+            <%= link_to "🎧 Открыть", bookmark.station.player_url, target: "_blank", rel: "noopener", class: "btn btn-secondary btn-sm" %>
+            <%= button_to "Удалить", bookmark_path(bookmark.station), method: :delete, class: "btn btn-secondary btn-sm", data: { confirm: "Удалить станцию из закладок?" } %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <div style="text-align: center; padding: 40px;">
+      <p class="text-muted" style="font-size: 18px; margin-bottom: 16px;">У вас пока нет закладок</p>
+      <p class="text-muted mb-3">Добавляйте станции в закладки для быстрого доступа</p>
+      <%= link_to "Перейти к станциям", root_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+<% if @bookmarks.any? %>
+  <div class="main">
+    <h2 class="mb-3">💡 Как использовать закладки</h2>
+    <ul style="padding-left: 20px; line-height: 1.8;">
+      <li>Нажмите кнопку "☆ В закладки" на странице станции</li>
+      <li>Все закладки отображаются на этой странице</li>
+      <li>Используйте закладки для быстрого доступа к любимым станциям</li>
+      <li>
+        <% if current_user.guest? %>
+          Guest план: <%= current_user.bookmarks_limit %> закладок максимум
+          <%= link_to "Зарегистрируйтесь", new_user_registration_path %> для увеличения лимита
+        <% elsif current_user.auth? %>
+          Auth план: безлимитные закладки
+        <% else %>
+          Premium план: безлимитные закладки
+        <% end %>
+      </li>
+    </ul>
+  </div>
+<% end %>

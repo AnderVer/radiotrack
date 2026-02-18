@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     post :cancel_subscription, to: "users/profiles#cancel"
   end
 
+  # Bookmarks
+  resources :bookmarks, only: [:index, :create, :destroy]
+
   # Web pages
   resources :stations, only: [:show]
 
