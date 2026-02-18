@@ -1,7 +1,7 @@
-# 🚀 RadioTrack — Реализованный план работ (M0–M3)
+# 🚀 RadioTrack — Реализованный план работ (M0–M4)
 
 **Дата:** 18 февраля 2026  
-**Статус:** M0 Bootstrap ✅, M1 Avtoradio ingest ✅, M2 Dedup ✅, M3 Solid Queue ✅
+**Статус:** M0 Bootstrap ✅, M1 Avtoradio ingest ✅, M2 Dedup ✅, M3 Solid Queue ✅, M4 UI ✅
 
 ---
 
@@ -58,6 +58,25 @@ docker compose exec web bin/rails db:detections:cleanup_duplicates
 # Добавить unique index
 docker compose exec web bin/rails db:detections:add_unique_index
 ```
+
+---
+
+### ✅ M4 — UI (Hotwire)
+
+| Задача | Статус | Файлы |
+|--------|--------|-------|
+| **UI: базовый layout + навигация** | ✅ | `app/views/layouts/application.html.erb` |
+| **UI: главная страница (список станций)** | ✅ | `app/views/pages/home.html.erb` |
+| **UI: страница станции (последние detections, время в МСК)** | ✅ | `app/views/stations/show.html.erb` |
+| **UI: paywall CTA для Paid функций** | ✅ | `app/views/pages/home.html.erb`, `app/views/stations/show.html.erb` |
+| **StationsController** | ✅ | `app/controllers/stations_controller.rb` |
+| **Routes для web страниц** | ✅ | `config/routes.rb` |
+| **Time format localization** | ✅ | `config/locales/ru.yml` |
+
+**Дополнительно:**
+- Базовые CSS стили (responsive layout)
+- Paywall компоненты для premium функций
+- Навигация с поддержкой авторизации
 
 ---
 
@@ -327,10 +346,10 @@ CRON_SECRET=<generate: openssl rand -hex 32>
 | **Unique index** | ✅ 100% (миграция готова) |
 | **Timezone МСК** | ✅ 100% |
 | **Тесты** | ✅ 100% (Detection + Parser) |
-| **UI** | ❌ 0% (следующий этап) |
-| **OAuth** | ❌ 0% |
-| **PWA** | ❌ 0% |
+| **UI (Hotwire)** | ✅ 100% (M4 завершён) |
+| **OAuth** | ❌ 0% (M5) |
+| **PWA** | ❌ 0% (M7) |
 
 ---
 
-**M0–M3 завершены.** Готов к реализации M4 (UI) и последующих этапов.
+**M0–M4 завершены.** Готов к реализации M5 (OAuth) и последующих этапов.
