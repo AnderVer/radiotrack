@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-require "open-uri"
-
-# Service for parsing Avtoradio playlist page
+# Parser for Avtoradio playlist page
 # URL: https://www.avtoradio.ru/playlist
 #
 # HTML structure:
@@ -19,19 +16,9 @@ require "open-uri"
 #
 # Date from header:
 #   <h1 class="mb40">Что за песня звучала 18 февраля 2026 в 11:38?</h1>
-class AvtoradioPlaylistParser
+class AvtoradioPlaylistParser < BasePlaylistParser
   BASE_URL = "https://www.avtoradio.ru"
   PLAYLIST_URL = "#{BASE_URL}/playlist"
-
-  # Russian month names mapping
-  MONTHS = {
-    "января" => 1, "февраля" => 2, "марта" => 3, "апреля" => 4,
-    "мая" => 5, "июня" => 6, "июля" => 7, "августа" => 8,
-    "сентября" => 9, "октября" => 10, "ноября" => 11, "декабря" => 12
-  }.freeze
-
-  # Regex for date extraction from header
-  DATE_REGEX = /Что за песня звучала\s+(\d{1,2})\s+(\w+)\s+(\d{4})\s+в\s+(\d{2}):(\d{2})/
 
   # CSS selectors
   SELECTORS = {
@@ -42,9 +29,6 @@ class AvtoradioPlaylistParser
     track_artist: "b",
     track_title_text: :text_after_br
   }.freeze
-
-  class ParseError < StandardError; end
-  class FetchError < StandardError; end
 
   # Main entry point
   # @param html [String] HTML content to parse
@@ -60,8 +44,8 @@ class AvtoradioPlaylistParser
     new.fetch_and_parse(url: url)
   end
 
-  def initialize
-    @logger = Rails.logger
+  def playlist_url
+    PLAYLIST_URL
   end
 
   def parse(html:)
@@ -70,7 +54,8 @@ class AvtoradioPlaylistParser
     doc = Nokogiri::HTML(html)
 
     # Try to extract date from header first
-    playlist_date = extract_date_from_header(doc)
+    header = doc.css("h1").find { |h| h.text.include?("Что за песня звучала") }
+    playlist_date = header ? extract_date_from_russian_header(header.text) : nil
     playlist_date ||= Date.current.in_time_zone("Europe/Moscow")
 
     @logger.info "[AvtoradioParser] Playlist date: #{playlist_date}"
@@ -96,27 +81,6 @@ class AvtoradioPlaylistParser
     raise ParseError, "Failed to parse HTML: #{e.message}"
   end
 
-  def fetch_and_parse(url: nil)
-    fetch_url = url || PLAYLIST_URL
-
-    @logger.info "[AvtoradioParser] Fetching #{fetch_url}"
-
-    begin
-      uri = URI.parse(fetch_url)
-      html = uri.open(
-        "User-Agent" => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-      ).read
-
-      parse(html: html)
-    rescue OpenURI::HTTPError => e
-      @logger.error "[AvtoradioParser] Fetch error: #{e.message}"
-      raise FetchError, "Failed to fetch playlist: #{e.message}"
-    rescue => e
-      @logger.error "[AvtoradioParser] Unexpected error: #{e.message}"
-      raise FetchError, "Unexpected error: #{e.message}"
-    end
-  end
-
   private
 
   def parse_track_item(item, playlist_date)
@@ -134,12 +98,12 @@ class AvtoradioPlaylistParser
     # Convert MSK time to UTC
     played_at = msk_time_to_utc(playlist_date, time_str)
 
-    {
-      artist: artist.presence,
-      title: title.presence,
+    create_track_hash(
+      artist: artist,
+      title: title,
       played_at: played_at,
       source: "avtoradio_playlist"
-    }
+    )
   end
 
   def extract_title_from_text_node(name_block)
@@ -151,39 +115,7 @@ class AvtoradioPlaylistParser
     br.next&.to_s&.strip || ""
   end
 
-  def extract_date_from_header(doc)
-    # Look for header like "Что за песня звучала 18 февраля 2026 в 11:38?"
-    header = doc.css("h1").find { |h| h.text.include?("Что за песня звучала") }
-    return unless header
-
-    match = header.text.match(DATE_REGEX)
-    return unless match
-
-    day = match[1].to_i
-    month_name = match[2].downcase
-    year = match[3].to_i
-
-    month = MONTHS[month_name]
-    return unless month
-
-    Date.new(year, month, day)
-  rescue => e
-    @logger.warn "[AvtoradioParser] Failed to extract date from header: #{e.message}"
-    nil
-  end
-
   def looks_like_time?(str)
     str.match?(/^\d{2}:\d{2}$/)
-  end
-
-  def msk_time_to_utc(date, time_str)
-    # Create MSK time from date and time string
-    hour, minute = time_str.split(":").map(&:to_i)
-
-    msk_time = Time.zone.parse("#{date.strftime('%Y-%m-%d')} #{hour}:#{minute}:00")
-
-    # Convert MSK to UTC (MSK = UTC + 3)
-    # ActiveSupport::TimeZone handles DST automatically
-    msk_time.utc
   end
 end

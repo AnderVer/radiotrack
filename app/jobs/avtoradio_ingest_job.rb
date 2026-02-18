@@ -13,9 +13,6 @@ class AvtoradioIngestJob < ApplicationJob
   retry_on AvtoradioPlaylistParser::FetchError, wait: :polynomially_longer, attempts: 3
   retry_on AvtoradioPlaylistParser::ParseError, wait: 5.minutes, attempts: 2
 
-  # Unique job configuration (prevent concurrent runs)
-  # Note: Requires solid_queue with unique constraint
-
   def perform
     logger.info "[AvtoradioIngest] Starting ingest job"
 
@@ -30,7 +27,7 @@ class AvtoradioIngestJob < ApplicationJob
 
     logger.info "[AvtoradioIngest] Station: #{station.title} (ID: #{station.id})"
 
-    # Fetch and parse playlist
+    # Use parser
     parser = AvtoradioPlaylistParser.new
     tracks = parser.fetch_and_parse
 
@@ -81,7 +78,7 @@ class AvtoradioIngestJob < ApplicationJob
       title: track[:title] || "Unknown",
       played_at: track[:played_at],
       artist_title_normalized: normalize_track_key(track[:artist], track[:title]),
-      confidence: 0.8,
+      confidence: track[:confidence] || 0.8,
       source: track[:source] || "avtoradio_playlist"
     )
 
