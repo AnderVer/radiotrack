@@ -1,0 +1,25 @@
+<% content_for :title, "Новый плейлист — RadioTrack" %>
+
+<div class="main" style="max-width: 500px; margin: 0 auto;">
+  <h1 class="mb-3">Создать плейлист</h1>
+
+  <%= form_with model: @playlist, local: true do |f| %>
+    <div class="mb-3">
+      <%= f.label :title, "Название плейлиста", class: "form-label" %>
+      <%= f.text_field :title, class: "form-control", style: "width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;", placeholder: "Мои любимые треки", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= f.label :local_id, "Local ID (опционально)", class: "form-label" %>
+      <%= f.text_field :local_id, class: "form-control", style: "width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px;", placeholder: "pl_12345" %>
+      <p class="text-sm text-muted">
+        Local ID используется для импорта гостевых плейлистов
+      </p>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+      <%= f.submit "Создать плейлист", class: "btn btn-primary" %>
+      <%= link_to "Отмена", playlists_path, class: "btn btn-secondary" %>
+    </div>
+  <% end %>
+</div>

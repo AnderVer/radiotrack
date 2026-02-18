@@ -1,0 +1,67 @@
+<% content_for :title, "Плейлисты — RadioTrack" %>
+
+<div class="main">
+  <h1 class="mb-3">🎵 Мои плейлисты</h1>
+
+  <div class="mb-3">
+    <%= link_to "➕ Создать плейлист", new_playlist_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @playlists.any? %>
+    <p class="text-muted mb-3">
+      Плейлисты: <%= @playlists.count %>
+      <% if current_user.playlists_limit %>
+        (лимит: <%= current_user.playlists_limit %>)
+      <% end %>
+    </p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+      <% @playlists.each do |playlist| %>
+        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 16px;">
+          <h3 style="margin: 0 0 8px 0;">
+            <%= link_to playlist.title, playlist_path(playlist) %>
+          </h3>
+          <p class="text-muted text-sm mb-2">
+            Треков: <%= playlist.playlist_items.count %>
+            <% if playlist.local_id? %>
+              <br/>Local ID: <code><%= playlist.local_id %></code>
+            <% end %>
+          </p>
+          <p class="text-sm text-muted">
+            Создан: <%= l playlist.created_at, format: :short %>
+          </p>
+          <div style="display: flex; gap: 8px; margin-top: 12px;">
+            <%= link_to "Просмотреть", playlist_path(playlist), class: "btn btn-secondary btn-sm" %>
+            <%= link_to "Редактировать", edit_playlist_path(playlist), class: "btn btn-secondary btn-sm" %>
+            <%= button_to "Удалить", playlist_path(playlist), method: :delete, class: "btn btn-secondary btn-sm", data: { confirm: "Удалить плейлист?" } %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div style="text-align: center; padding: 40px;">
+      <p class="text-muted" style="font-size: 18px; margin-bottom: 16px;">У вас пока нет плейлистов</p>
+      <p class="text-muted mb-3">Создайте первый плейлист для сохранения треков</p>
+      <%= link_to "Создать плейлист", new_playlist_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="main mt-3">
+  <h2 class="mb-3">💡 Как использовать плейлисты</h2>
+  <ul style="padding-left: 20px; line-height: 1.8;">
+    <li>Создавайте плейлисты для сохранения понравившихся треков</li>
+    <li>
+      <% if current_user.guest? %>
+        Guest план: <%= current_user.playlists_limit %> плейлистов, <%= current_user.playlist_items_per_playlist_limit %> треков в каждом
+        <%= link_to "Зарегистрируйтесь", new_user_registration_path %> для увеличения лимита
+      <% elsif current_user.auth? %>
+        Auth план: <%= current_user.playlists_limit %> плейлистов, <%= current_user.playlist_items_per_playlist_limit %> треков в каждом
+      <% else %>
+        Premium план: <%= current_user.playlists_limit %> плейлистов, <%= current_user.playlist_items_per_playlist_limit %> треков в каждом
+      <% end %>
+    </li>
+    <li>Импортируйте гостевые плейлисты после регистрации</li>
+    <li>Добавляйте треки из эфира через "Capture now playing"</li>
+  </ul>
+</div>

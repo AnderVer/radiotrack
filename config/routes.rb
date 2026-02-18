@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   # Bookmarks
   resources :bookmarks, only: [:index, :create, :destroy]
 
+  # Playlists
+  resources :playlists
+
   # Web pages
   resources :stations, only: [:show]
 

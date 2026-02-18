@@ -92,6 +92,7 @@
           <%= link_to "Станции", root_path %>
           <% if user_signed_in? %>
             <%= link_to "Закладки", bookmarks_path %>
+            <%= link_to "Плейлисты", playlists_path %>
             <%= link_to "Профиль", user_profile_path %>
             <%= link_to "Выйти", destroy_user_session_path, method: :delete %>
           <% else %>
