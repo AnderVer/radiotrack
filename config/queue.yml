@@ -1,0 +1,14 @@
+# Queue Adapter Configuration
+# See: https://guides.rubyonrails.org/active_job_basics.html
+
+default: &default
+  queue_adapter: :solid_queue
+
+development:
+  <<: *default
+
+test:
+  queue_adapter: :test
+
+production:
+  <<: *default

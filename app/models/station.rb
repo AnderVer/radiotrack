@@ -15,6 +15,7 @@ class Station < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :federal, -> { where(federal: true) }
   scope :for_contests, -> { where(contest_enabled: true) }
+  scope :with_playlist, -> { where.not(playlist_url: nil) }
 
   # Get last played track
   def last_track
@@ -25,6 +26,11 @@ class Station < ApplicationRecord
   def playlist(range: "30m")
     duration = parse_duration(range)
     detections.where("played_at >= ?", duration.ago).order(played_at: :desc)
+  end
+
+  # Check if station has public playlist
+  def has_public_playlist?
+    playlist_url.present?
   end
 
   # Find stations where track is playing now

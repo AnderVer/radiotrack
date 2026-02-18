@@ -40,12 +40,13 @@
 
 - Docker Desktop
 - Git
+- GitHub CLI (опционально, для работы с задачами)
 
 ### Установка
 
 ```bash
 # Клонирование репозитория
-git clone https://github.com/YOUR_USERNAME/radiotrack.git
+git clone https://github.com/AnderVer/radiotrack.git
 cd radiotrack
 
 # Копирование .env
@@ -58,6 +59,44 @@ docker compose up -d
 docker compose exec web bin/rails db:create db:migrate db:seed
 
 # Открыть http://localhost:3000
+```
+
+### Запуск Solid Queue (фоновые задачи)
+
+```bash
+# В отдельном терминале
+docker compose exec web bin/rails solid_queue:start
+```
+
+**Примечание:** Solid Queue работает без Redis — используется PostgreSQL.
+
+### Проверка работы
+
+```bash
+# Консоль Rails
+docker compose exec web bin/rails console
+
+# Проверка станций
+Station.count  # должно быть 10
+
+# Проверка Detection
+Detection.first
+
+# Запуск тестов (если есть)
+docker compose exec web bin/rails test
+```
+
+### Логи
+
+```bash
+# Логи веб-сервера
+docker compose logs -f web
+
+# Логи базы данных
+docker compose logs -f db
+
+# Логи Solid Queue (если запущен)
+docker compose exec web tail -f log/development.log
 ```
 
 ## 📡 Радиостанции (MVP)
@@ -93,10 +132,12 @@ docker compose exec web bin/rails db:create db:migrate db:seed
 │                      │                                  │
 │       ┌──────────────┼──────────────┐                   │
 │       ↓              ↓              ↓                   │
-│  PostgreSQL    Sidekiq Jobs   External API             │
-│   (data)       (background)   (AudD.io)                │
+│  PostgreSQL    Solid Queue    Open Playlists           │
+│   (data)       (background)   (Avtoradio, etc.)        │
 └─────────────────────────────────────────────────────────┘
 ```
+
+**Ключевое решение:** Основной источник данных "что играло" — **открытые плейлисты радиостанций** (парсинг HTML). AudD/ACRCloud — опциональный fallback.
 
 ## 📚 API Endpoints
 

@@ -12,6 +12,12 @@ gem "jbuilder"
 gem "propshaft"
 gem "solid_queue"
 
+# HTML parsing for playlists
+gem "nokogiri"
+
+# HTTP client
+gem "httparty"
+
 # Authentication
 gem "devise"
 gem "omniauth-rails_csrf_protection"
