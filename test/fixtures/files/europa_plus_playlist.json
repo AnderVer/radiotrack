@@ -1,0 +1,28 @@
+{
+  "tracks": [
+    {
+      "artist": "The Weeknd",
+      "title": "Blinding Lights",
+      "played_at": "2026-02-19T12:30:00Z",
+      "duration": 200
+    },
+    {
+      "artist": "Dua Lipa",
+      "title": "Levitating",
+      "played_at": "2026-02-19T12:26:00Z",
+      "duration": 203
+    },
+    {
+      "artist": "Harry Styles",
+      "title": "As It Was",
+      "played_at": "2026-02-19T12:22:00Z",
+      "duration": 167
+    },
+    {
+      "artist": "Ed Sheeran",
+      "title": "Shape of You",
+      "played_at": "2026-02-19T12:18:00Z",
+      "duration": 233
+    }
+  ]
+}

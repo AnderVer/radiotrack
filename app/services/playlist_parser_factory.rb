@@ -11,8 +11,8 @@
 class PlaylistParserFactory
   # Map station codes to parser classes
   PARSER_MAP = {
-    "avtoradio" => AvtoradioPlaylistParser
-    # "europe_plus" => EuropaPlusPlaylistParser  # TODO: Implement
+    "avtoradio" => AvtoradioPlaylistParser,
+    "europe_plus" => EuropaPlusPlaylistParser
   }.freeze
 
   # Get parser instance for station
