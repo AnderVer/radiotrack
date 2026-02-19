@@ -1,4 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <rect width="192" height="192" fill="#0066cc" rx="24"/>
-  <text x="96" y="120" font-family="Arial, sans-serif" font-size="80" font-weight="bold" fill="white" text-anchor="middle">📻</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Background -->
+  <rect width="192" height="192" rx="24" fill="#0066cc"/>
+  
+  <!-- Radio waves -->
+  <circle cx="96" cy="96" r="20" fill="none" stroke="#fff" stroke-width="4" opacity="0.3"/>
+  <circle cx="96" cy="96" r="35" fill="none" stroke="#fff" stroke-width="4" opacity="0.5"/>
+  <circle cx="96" cy="96" r="50" fill="none" stroke="#fff" stroke-width="4" opacity="0.7"/>
+  
+  <!-- Radio icon -->
+  <rect x="56" y="76" width="80" height="40" rx="8" fill="#fff"/>
+  <circle cx="76" cy="96" r="8" fill="#0066cc"/>
+  <circle cx="116" cy="96" r="8" fill="#0066cc"/>
+  <line x1="96" y1="76" x2="96" y2="60" stroke="#fff" stroke-width="4"/>
+  <circle cx="96" cy="56" r="4" fill="#fff"/>
 </svg>

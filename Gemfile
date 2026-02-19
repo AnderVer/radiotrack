@@ -19,10 +19,11 @@ gem "nokogiri"
 gem "httparty"
 
 # Authentication
-gem "devise"
+gem "devise", require: "devise"
 gem "omniauth-rails_csrf_protection"
 gem "omniauth"
-gem "httparty"  # Для ручных OAuth запросов (VK, Yandex, Telegram)
+gem "omniauth-vkontakte"
+gem "omniauth-yandex"
 
 # Authorization
 gem "pundit"
@@ -43,3 +44,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "dotenv-rails", "~> 3.2"
+
+gem "tzinfo-data", "~> 1.2025"

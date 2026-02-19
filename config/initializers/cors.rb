@@ -8,7 +8,7 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
     resource '*',
       headers: :any,
       methods: [:get, :post, :put, :patch, :delete, :options, :head],
-      credentials: true,
+      credentials: false,  # Disabled for wildcard origins (security)
       max_age: 12.hours
   end
 end
